@@ -10,7 +10,6 @@ interface Heart {
 
 export default function HeartEffect() {
   const colors = ['#ff0000', '#ff69b4', '#ff1493', '#ff007f', '#ff69b4'];
-  const hearts: Heart[] = [];
 
   const createHeart = (x: number, y: number) => {
     const heart = document.createElement('div');

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import LoveEffects from './components/LoveEffects';
+import Firework from './components/Firework';
 
 export default function Home() {
   const effectActive = useRef(false);
@@ -12,7 +13,12 @@ export default function Home() {
     if (effectActive.current) return;
     
     effectActive.current = true;
-    const { createMessage, createHeart } = LoveEffects();
+    const { createMessage, createHeart } = new LoveEffects();
+    const { createFirework } = new Firework();
+    
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.log(err);
+    });
     
     if (buttonRef.current) {
       buttonRef.current.style.opacity = '0';
@@ -23,12 +29,22 @@ export default function Home() {
       for (let i = 0; i < 2; i++) {
         createMessage();
         createHeart();
+        if (Math.random() > 0.7) { // %30 ihtimalle havai fişek
+          createFirework();
+        }
       }
     }, 200);
 
     timeoutRef.current = setTimeout(() => {
       clearInterval(interval);
       effectActive.current = false;
+      
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch((err) => {
+          console.log(err);
+        });
+      }
+      
       if (buttonRef.current) {
         buttonRef.current.style.opacity = '1';
         buttonRef.current.style.pointerEvents = 'auto';
@@ -41,11 +57,16 @@ export default function Home() {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch((err) => {
+          console.log(err);
+        });
+      }
     };
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center">
       <button 
         ref={buttonRef}
         onClick={handleClick}
